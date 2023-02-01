@@ -1,0 +1,67 @@
+type User {
+	Id            int64  `json:"id"`
+	Name          string `json:"name"`
+	FollowCount   string `json:"follow_count"`
+	FollowerCount string `json:"follower_count"`
+	IsFollow      bool   `json:"is_follow"`
+}
+
+type (
+	LoginReq {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	LoginReply {
+		UserId int64  `json:"user_id"`
+		Name   string `json:"name"`
+		Token  string `json:"token"`
+	}
+)
+
+type (
+	RegisterReq {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	RegisterReply {
+		UserId int64  `json:"user_id"`
+		Token  string `json:"token"`
+	}
+)
+
+type (
+	UserInfoReq {
+		UserId int64  `json:"user_id"`
+		Token  string `json:"token"`
+	}
+	UserInfoReply {
+		UserInfo User `json:"user"`
+	}
+)
+
+@server(
+	prefix: douyin/user
+	group: user
+)
+service usercenter {
+	@doc "login"
+	@handler login
+	post /login (LoginReq) returns (LoginReply)
+	
+	@doc "register"
+	@handler register
+	post /register (RegisterReq) returns (RegisterReply)
+}
+
+@server(
+	prefix: douyin/user
+	group: user
+	jwt: JwtAuth
+)
+service usercenter {
+	@doc "userinfo"
+	@handler userinfo
+	get /  (UserInfoReq) returns (UserInfoReply)
+}
